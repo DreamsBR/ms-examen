@@ -16,7 +16,6 @@ public class UsuarioController {
     public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
         return usuarioService.createUsuario(usuario);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long id) {
         return usuarioService.getUsuarioById(id);
@@ -30,4 +29,9 @@ public class UsuarioController {
     public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
         return usuarioService.deleteUsuario(id);
     }
+    @GetMapping("/rol")
+    public ResponseEntity<String> saludoAdmin(){
+        return ResponseEntity.ok("Hola User");
+    }
+
 }

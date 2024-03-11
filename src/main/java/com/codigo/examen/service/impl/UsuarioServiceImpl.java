@@ -7,6 +7,9 @@ import com.codigo.examen.repository.UsuarioRepository;
 import com.codigo.examen.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -53,7 +56,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
-    private ResponseEntity<Usuario> getUsuarioResponseEntity(Usuario usuario) {
+    public ResponseEntity<Usuario> getUsuarioResponseEntity(Usuario usuario) {
         Set<Rol> assignedRoles = new HashSet<>();
         for (Rol roles : usuario.getRoles()) {
             Optional<Rol> rol = rolRepository.findById(roles.getIdRol());
@@ -77,4 +80,17 @@ public class UsuarioServiceImpl implements UsuarioService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                return usuarioRepository.findByUsername(username).orElseThrow( ()->
+                        new UsernameNotFoundException("Usuario no encontrado"));
+            }
+        };
+    }
+
+
 }
