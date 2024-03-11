@@ -19,10 +19,13 @@
 		<sonar.token>sqp_ac3db2f740d7118d58358eaefc95772b92f00c42</sonar.token>
 		<sonar.projectKey>examen</sonar.projectKey>
 		<sonar.projectName>examen-sonar</sonar.projectName>
-		<sonar.exclusions>**/entity/*.java,
+		<sonar.exclusions>
+			**/entity/*.java,
 			**/ExamenApplication.java,
 			**/JwtAuthenticationFilter.java,
-			**/SecurityConfiguration.java
+			**/SecurityConfiguration.java,
+			**/JwtAuthenticationFilter.java,
+			**/config/**/*.*
 		</sonar.exclusions>
 	</properties>
 	<dependencies>
@@ -101,6 +104,11 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.7</version>
+				<configuration>
+				<excludes>
+					<exclude>**/config/**</exclude>
+				</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

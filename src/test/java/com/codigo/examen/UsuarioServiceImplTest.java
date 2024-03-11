@@ -15,13 +15,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class UsuarioServiceImplTest {
@@ -141,6 +142,28 @@ class UsuarioServiceImplTest {
         ResponseEntity<Usuario> result = usuarioService.updateUsuario(1L, usuario);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void userDetailsServiceShouldReturnUserDetailsWhenUserExists() {
+        String username = "existingUser";
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.of(usuario));
+
+        UserDetails result = usuarioService.userDetailsService().loadUserByUsername(username);
+
+        assertEquals(username, result.getUsername());
+    }
+
+    @Test
+    void userDetailsServiceShouldThrowExceptionWhenUserDoesNotExist() {
+        String username = "nonExistingUser";
+        when(usuarioRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () -> {
+            usuarioService.userDetailsService().loadUserByUsername(username);
+        });
     }
 
 }
